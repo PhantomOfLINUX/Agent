@@ -23,7 +23,7 @@ async function executeControllerMethod(req, res, methodName) {
     const { stageId } = req.body;
     const controllerName = getControllerName(stageId);
     try {
-        const controller = require(`../controllers/${controllerName}`);
+        const controller = require(`../controllers/${controllerName}`); // 컨트롤러 명과 일치하는 js 파일 동적 improt
 
         if (!isValidMethod(controller, methodName)) {
             res.status(404).json({ error: "등록되지 않은 메서드" });
