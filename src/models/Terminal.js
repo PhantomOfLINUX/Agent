@@ -9,6 +9,7 @@ class Terminal {
             cwd: process.env.HOME,
             env: process.env,
         });
+        this.ptyProcess.write("export HISTTIMEFORMAT=\"%F %T \"")
     }
 
     onData(callback) {
