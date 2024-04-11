@@ -11,19 +11,19 @@ stageRouter.post("/compose", (req, res) => {
     executeControllerMethod(req, res, "compose");
 });
 
-function getControllerName(stageId) {
-    return `stage${stageId.toString().padStart(2, "0")}Controller`;
+function getControllerName(stageCode) {
+    return `${stageCode}Controller`;
 }
 
-function isValidMethod(controller, methodName) {
+function isValidMethod(controller, methodName) { // 컨트롤러가 있고, 메서드가 존재하는지
     return controller && typeof controller[methodName] === "function";
 }
 
 async function executeControllerMethod(req, res, methodName) {
-    const { stageId } = req.body;
-    const controllerName = getControllerName(stageId);
+    const { stageCode } = req.body;
+    const controllerName = getControllerName(stageCode);
     try {
-        const controller = require(`../controllers/${controllerName}`);
+        const controller = require(`../controllers/${controllerName}`); // 컨트롤러 명과 일치하는 js 파일 동적 improt
 
         if (!isValidMethod(controller, methodName)) {
             res.status(404).json({ error: "등록되지 않은 메서드" });
