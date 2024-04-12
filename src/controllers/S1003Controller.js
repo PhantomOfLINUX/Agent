@@ -8,8 +8,23 @@ exports.grade = async (req, res) => {
     const { questionIndex } = req.body;
     let result;
 
-    if (questionIndex === 1) {
-        result = await gradeQ1();
+    if (questionIndex === 2) {
+        result = await gradeQ2();
+        res.json({ success: result });
+        return;
+    }
+    if (questionIndex === 3) {
+        result = await gradeQ3();
+        res.json({ success: result });
+        return;
+    }
+    if (questionIndex === 4) {
+        result = await gradeQ4();
+        res.json({ success: result });
+        return;
+    }
+    if (questionIndex === 5) {
+        result = await gradeQ5();
         res.json({ success: result });
         return;
     }
