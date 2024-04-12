@@ -145,8 +145,8 @@ async function composeQ1() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage/test &&' +
-            'cp /usr/stage_file/Q1/Hello.txt /home/$stage/test'
+            'cp /usr/stage_file/Q1/Hello.txt /home/$stage/test &&' +
+            'cd /home/$stage'
         );
 
         return true;
@@ -162,7 +162,7 @@ async function composeQ2() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage/test'
+            'cd /home/$stage'
         );
 
         return true;
@@ -178,8 +178,8 @@ async function composeQ3() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage/test &&' +
-            'cp /usr/stage_file/Q3/Hello.txt /home/$stage/test'
+            'cp /usr/stage_file/Q3/Hello.txt /home/$stage/test &&' +
+            'cd /home/$stage'
         );
 
         return true;
@@ -195,8 +195,8 @@ async function composeQ4() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage/test &&' +
-            'cp /usr/stage_file/Q4/original.txt /home/$stage/test'
+            'cp /usr/stage_file/Q4/original.txt /home/$stage/test &&' +
+            'cd /home/$stage'
         );
 
         return true;
@@ -212,9 +212,9 @@ async function composeQ5() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage/test &&' +
             'cp /usr/stage_file/Q5/sample1.txt /home/$stage/test &&' +
-            'cp /usr/stage_file/Q5/sample2.txt /home/$stage/test'
+            'cp /usr/stage_file/Q5/sample2.txt /home/$stage/test &&' +
+            'cd /home/$stage'
         );
 
         return true;

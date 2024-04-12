@@ -80,7 +80,7 @@ async function composeQ1() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/cd_pwd_stage/ &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage/cd_pwd_stage'
+            'cd /home/$stage'
         );
 
         return true;
@@ -95,7 +95,8 @@ async function composeQ2() {
     try {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/cd_pwd_stage/ &&' +
-            'rm -rf .[!.]* *'
+            'rm -rf .[!.]* * &&' +
+            'cd /home/$stage'
         );
 
         return true;
@@ -112,7 +113,8 @@ async function composeQ3() {
             'cd /home/$stage/cd_pwd_stage/ &&' +
             'rm -rf .[!.]* * &&' +
             'mkdir /home/$stage/cd_pwd_stage/dir1 &&' +
-            'touch /home/$stage/cd_pwd_stage/dir1/Hello_wolrd'
+            'touch /home/$stage/cd_pwd_stage/dir1/Hello_wolrd &&' +
+            'cd /home/$stage'
         );
 
         return true;
@@ -129,7 +131,8 @@ async function composeQ4() {
             'cd /home/$stage/cd_pwd_stage/ &&' +
             'rm -rf .[!.]* * &&' +
             'mkdir /home/$stage/cd_pwd_stage/dir1 &&' +
-            'touch /home/$stage/cd_pwd_stage/dir1/Hi_wolrd'
+            'touch /home/$stage/cd_pwd_stage/dir1/Hi_wolrd &&' +
+            'cd /home/$stage'
         );
 
         return true;
@@ -145,7 +148,8 @@ async function composeQ5() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/cd_pwd_stage/ &&' +
             'rm -rf .[!.]* * &&' +
-            'mkdir /home/$stage/cd_pwd_stage/dir1'
+            'mkdir /home/$stage/cd_pwd_stage/dir1 &&' +
+            'cd /home/$stage'
         );
 
         return true;
