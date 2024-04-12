@@ -13,7 +13,6 @@ exports.grade = async (req, res) => {
         res.json({ success: result });
         return;
     }
-
     // 추가 번호 확장가능
     res.json({ success: false });
 };
