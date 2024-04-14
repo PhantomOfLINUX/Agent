@@ -84,7 +84,7 @@ async function gradeQ4() {
 }
 
 // 5번 문항에 대한 정답 판별 로직
-async function gradeQ3() {
+async function gradeQ5() {
     try {
         const { stdout, stderr } = await execAsync(
             "diff /usr/stage_file/Q5/answer.txt /home/$stage/test/sample2.txt"
