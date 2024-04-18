@@ -49,10 +49,10 @@ async function gradeQ1() {
     try {
         const stats = await fs.stat("/home/$stage/test/A.txt");
         if (stats.isFile()) {
-            console.log("[grade] result: true, it is a directory");
+            console.log("[grade] result: true, it is a file");
             return true; // 파일이 존재하면 true 반환
         } else {
-            console.log("[grade] result: false, it is not a directory");
+            console.log("[grade] result: false, it is not a file");
             return false; // 디렉토리로 존재할 때
         }
     } catch (error) {
@@ -218,7 +218,6 @@ async function composeQ1() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q1/Hello.txt /home/$stage/test &&' +
             'cd /home/$stage'
         );
 
