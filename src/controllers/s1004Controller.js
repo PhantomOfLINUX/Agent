@@ -298,7 +298,7 @@ async function composeQ6() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1004/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/Q6/ /home/s1004/test/ &&' +
+            'cp -r /usr/stage_file/Q6/* /home/s1004/test/ &&' +
             'cd /home/s1004'
         );
 
