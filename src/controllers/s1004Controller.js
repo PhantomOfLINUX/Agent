@@ -44,10 +44,10 @@ exports.grade = async (req, res) => {
     res.json({ success: false });
 };
 
-// 1번 문항에 대한 정답 판별 로직
+// 1번 문항에 대한 정답 판별 로직       ////안됨
 async function gradeQ1() {
     try {
-        const stats = await fs.stat("/home/$stage/test/A.txt");
+        const stats = await fs.stat("/home/s1004/test/A.txt");
         if (stats.isFile()) {
             console.log("[grade] result: true, it is a file");
             return true; // 파일이 존재하면 true 반환
