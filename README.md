@@ -9,7 +9,7 @@
 
 ```json
 {
-    "stageCode": "S1001",
+    "stageCode": "s1001",
     "questionIndex": 1
 }
 ```
