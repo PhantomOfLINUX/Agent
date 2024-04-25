@@ -267,7 +267,7 @@ async function composeQ4() {
         const { stdout, stderr } = await execAsync(
             'cd /home/$stage/test &&' +
             'rm -rf .[!.]* * &&' +
-            'mkdir /home/$stage/test/dir4' +
+            'mkdir /home/$stage/test/dir4 &&' +
             'cd /home/$stage'
         );
 
