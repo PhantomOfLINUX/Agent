@@ -44,7 +44,7 @@ exports.grade = async (req, res) => {
     res.json({ success: false });
 };
 
-// 1번 문항에 대한 정답 판별 로직       ////안됨
+// 1번 문항에 대한 정답 판별 로직  
 async function gradeQ1() {
     try {
         const { stdout, stderr } = await execAsync(
@@ -63,19 +63,18 @@ async function gradeQ1() {
 
 // 2번 문항에 대한 정답 판별 로직
 async function gradeQ2() {
-    const stage = process.env.stage; // 환경 변수 stage의 값을 불러옴
     try {
-        const stats = await fs.stat("/home/s1005/test/dir2");
-        if (stats.isDirectory()) {
-            console.log("[grade] result: true, it is a directory");
-            return true; // 디렉토리가 존재하면 true 반환
-        } else {
-            console.log("[grade] result: false, it is not a directory");
-            return false; // 파일은 있지만 디렉토리는 아닐 때
-        }
+        const { stdout, stderr } = await execAsync(
+            "diff /home/s1005/test/report/monthly_report.txt  /home/s1005/test/report/backup_report.txt"
+        );
+        console.log(stdout);
+
+        const result = !stdout; // stdout 존재유무로 diff 판단
+        console.log(`[grade] result: ${result}`);
+        return result;
     } catch (error) {
         console.error(`[grade] error: ${error}`);
-        return false; // 디렉토리가 존재하지 않으면 false 반환
+        return false;
     }
 }
 
@@ -233,6 +232,7 @@ async function composeQ2() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1005/test &&' +
             'rm -rf .[!.]* * &&' +
+            'cp -r /usr/stage_file/Q2/report /home/s1005/test/report &&' +
             'cd /home/s1005'
         );
 
