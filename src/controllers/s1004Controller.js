@@ -44,10 +44,10 @@ exports.grade = async (req, res) => {
     res.json({ success: false });
 };
 
-// 1번 문항에 대한 정답 판별 로직
+// 1번 문항에 대한 정답 판별 로직       ////안됨
 async function gradeQ1() {
     try {
-        const stats = await fs.stat("/home/$stage/test/A.txt");
+        const stats = await fs.stat("/home/s1004/test/A.txt");
         if (stats.isFile()) {
             console.log("[grade] result: true, it is a file");
             return true; // 파일이 존재하면 true 반환
@@ -63,8 +63,9 @@ async function gradeQ1() {
 
 // 2번 문항에 대한 정답 판별 로직
 async function gradeQ2() {
+    const stage = process.env.stage; // 환경 변수 stage의 값을 불러옴
     try {
-        const stats = await fs.stat("/home/$stage/test/dir2");
+        const stats = await fs.stat("/home/s1004/test/dir2");
         if (stats.isDirectory()) {
             console.log("[grade] result: true, it is a directory");
             return true; // 디렉토리가 존재하면 true 반환
@@ -82,23 +83,22 @@ async function gradeQ2() {
 async function gradeQ3() {
     const stage = process.env.stage; // 환경 변수 stage의 값을 불러옴
     try {
-        await fs.access("/home/$stage/test/Hello.txt");
-        console.log("/home/$stage/test/Hello.txt exists.");
+        await fs.access("/home/s1004/test/Hello.txt");
+        console.log("/home/s1004/test/Hello.txt exists.");
         return false; // 파일이 존재하므로 삭제되지 않음
     } catch (error) {
         if (error.code === 'ENOENT') {
-            console.log("/home/$stage/test/Hello.txt does not exist or has been deleted.");
+            console.log("/home/s1004/test/Hello.txt does not exist or has been deleted.");
             return true; // 파일이 존재하지 않으므로 삭제됐거나 존재하지 않음
         }
-        console.error(`Error accessing /home/$stage/test/Hello.txt: ${error}`);
+        console.error(`Error accessing /home/s1004/test/Hello.txt: ${error}`);
         return false; // 다른 오류가 발생한 경우
     }
 }
 
 // 4번 문항에 대한 정답 판별 로직
 async function gradeQ4() {
-    const stage = process.env.stage; // 환경 변수 stage의 값을 불러옴
-    const dirPath = `/home/${stage}/test/dir4`; // 템플릿 리터럴을 사용하여 경로 생성
+    const dirPath = `/home/s1004/test/dir4`; // 템플릿 리터럴을 사용하여 경로 생성
 
     try {
         const stats = await fs.stat(dirPath);
@@ -121,8 +121,7 @@ async function gradeQ4() {
 
 // 5번 문항에 대한 정답 판별 로직
 async function gradeQ5() {
-    const stage = process.env.stage; // 환경 변수 stage의 값을 불러옴
-    const dirPath = `/home/${stage}/test/dir5`; // 템플릿 리터럴을 사용하여 경로 생성
+    const dirPath = `/home/s1004/test/dir5`; // 템플릿 리터럴을 사용하여 경로 생성
 
     try {
         const stats = await fs.stat(dirPath);
@@ -144,10 +143,8 @@ async function gradeQ5() {
 }
 
 async function gradeQ6() {
-    const stage = process.env.stage; // 환경 변수 stage의 값을 불러옴
-
     try {
-        const files = await fs.readdir(`/home/${stage}/test/`); // 디렉토리 내의 모든 파일과 디렉토리 목록을 읽음
+        const files = await fs.readdir(`/home/s1004/test/`); // 디렉토리 내의 모든 파일과 디렉토리 목록을 읽음
         const txtFiles = files.filter(file => file.endsWith('.txt')); // .txt 확장자를 가진 파일만 필터링
         const wttzttavtxtExists = files.includes('wttzttavtxt'); // 'wttzttavtxt' 파일이 존재하는지 확인
 
@@ -216,9 +213,9 @@ exports.compose = async (req, res) => {
 async function composeQ1() {
     try {
         const { stdout, stderr } = await execAsync(
-            'cd /home/$stage/test &&' +
+            'cd /home/s1004/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage'
+            'cd /home/s1004'
         );
 
         return true;
@@ -232,9 +229,9 @@ async function composeQ1() {
 async function composeQ2() {
     try {
         const { stdout, stderr } = await execAsync(
-            'cd /home/$stage/test &&' +
+            'cd /home/s1004/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cd /home/$stage'
+            'cd /home/s1004'
         );
 
         return true;
@@ -248,10 +245,10 @@ async function composeQ2() {
 async function composeQ3() {
     try {
         const { stdout, stderr } = await execAsync(
-            'cd /home/$stage/test &&' +
+            'cd /home/s1004/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q3/Hello.txt /home/$stage/test &&' +
-            'cd /home/$stage'
+            'cp /usr/stage_file/Q3/Hello.txt /home/s1004/test &&' +
+            'cd /home/s1004'
         );
 
         return true;
@@ -265,10 +262,10 @@ async function composeQ3() {
 async function composeQ4() {
     try {
         const { stdout, stderr } = await execAsync(
-            'cd /home/$stage/test &&' +
+            'cd /home/s1004/test &&' +
             'rm -rf .[!.]* * &&' +
-            'mkdir /home/$stage/test/dir4' +
-            'cd /home/$stage'
+            'mkdir /home/s1004/test/dir4 &&' +
+            'cd /home/s1004'
         );
 
         return true;
@@ -282,10 +279,10 @@ async function composeQ4() {
 async function composeQ5() {
     try {
         const { stdout, stderr } = await execAsync(
-            'cd /home/$stage/test &&' +
+            'cd /home/s1004/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/Q5/dir5 /home/$stage/test/dir5 &&' +
-            'cd /home/$stage'
+            'cp -r /usr/stage_file/Q5/dir5 /home/s1004/test/dir5 &&' +
+            'cd /home/s1004'
         );
 
         return true;
@@ -299,10 +296,10 @@ async function composeQ5() {
 async function composeQ6() {
     try {
         const { stdout, stderr } = await execAsync(
-            'cd /home/$stage/test &&' +
+            'cd /home/s1004/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/Q6/ /home/$stage/test/ &&' +
-            'cd /home/$stage'
+            'cp -r /usr/stage_file/Q6/* /home/s1004/test/ &&' +
+            'cd /home/s1004'
         );
 
         return true;

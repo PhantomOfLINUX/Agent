@@ -5,7 +5,7 @@
 -   채점 "/grade"
 -   환경 "/compose"
 
-## body 예시 .
+## body 예시
 
 ```json
 {
