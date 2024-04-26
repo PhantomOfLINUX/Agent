@@ -80,18 +80,18 @@ async function gradeQ2() {
 
 // 3번 문항에 대한 정답 판별 로직
 async function gradeQ3() {
-    const stage = process.env.stage; // 환경 변수 stage의 값을 불러옴
     try {
-        await fs.access("/home/s1005/test/Hello.txt");
-        console.log("/home/s1005/test/Hello.txt exists.");
-        return false; // 파일이 존재하므로 삭제되지 않음
+        const { stdout, stderr } = await execAsync(
+            "diff -r /home/s1005/test/report/monthly_report.txt  /home/s1005/test/report/backup_report.txt"
+        );
+        console.log(stdout);
+
+        const result = !stdout; // stdout 존재유무로 diff 판단
+        console.log(`[grade] result: ${result}`);
+        return result;
     } catch (error) {
-        if (error.code === 'ENOENT') {
-            console.log("/home/s1005/test/Hello.txt does not exist or has been deleted.");
-            return true; // 파일이 존재하지 않으므로 삭제됐거나 존재하지 않음
-        }
-        console.error(`Error accessing /home/s1005/test/Hello.txt: ${error}`);
-        return false; // 다른 오류가 발생한 경우
+        console.error(`[grade] error: ${error}`);
+        return false;
     }
 }
 
@@ -249,7 +249,7 @@ async function composeQ3() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1005/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q3/Hello.txt /home/s1005/test &&' +
+            'cp -r /usr/stage_file/Q3/config /home/s1005/test/config &&' +
             'cd /home/s1005'
         );
 
