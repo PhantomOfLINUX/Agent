@@ -97,24 +97,18 @@ async function gradeQ3() {
 
 // 4번 문항에 대한 정답 판별 로직
 async function gradeQ4() {
-    const dirPath = `/home/s1005/test/dir4`; // 템플릿 리터럴을 사용하여 경로 생성
-
     try {
-        const stats = await fs.stat(dirPath);
-        if (stats.isDirectory()) {
-            console.log(`${dirPath} exists and is a directory.`);
-            return false; // 디렉토리가 존재하므로 삭제되지 않음
-        } else {
-            console.log(`${dirPath} exists but is not a directory.`);
-            return false; // 경로는 존재하지만 디렉토리가 아님
-        }
+        const { stdout, stderr } = await execAsync(
+            "diff -r /usr/stage_file/Q4/answer_dir4  /home/s1005/test/dir4"
+        );
+        console.log(stdout);
+
+        const result = !stdout; // stdout 존재유무로 diff 판단
+        console.log(`[grade] result: ${result}`);
+        return result;
     } catch (error) {
-        if (error.code === 'ENOENT') {
-            console.log(`${dirPath} does not exist or has been deleted.`);
-            return true; // 디렉토리가 존재하지 않으므로 삭제되었거나 존재하지 않음
-        }
-        console.error(`Error accessing ${dirPath}: ${error}`);
-        return false; // 다른 오류가 발생한 경우
+        console.error(`[grade] error: ${error}`);
+        return false;
     }
 }
 
@@ -266,7 +260,8 @@ async function composeQ4() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1005/test &&' +
             'rm -rf .[!.]* * &&' +
-            'mkdir /home/s1005/test/dir4 &&' +
+            'cp -r /usr/stage_file/Q4/backup_dir4 /home/s1005/test/backup_dir4 &&' +
+            'cp -r /usr/stage_file/Q4/dir4 /home/s1005/test/dir4 &&' +
             'cd /home/s1005'
         );
 
