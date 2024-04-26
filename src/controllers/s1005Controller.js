@@ -82,7 +82,7 @@ async function gradeQ2() {
 async function gradeQ3() {
     try {
         const { stdout, stderr } = await execAsync(
-            "diff -r /home/s1005/test/report/monthly_report.txt  /home/s1005/test/report/backup_report.txt"
+            "diff -r /home/s1005/test/config  /home/s1005/test/config_backup"
         );
         console.log(stdout);
 
