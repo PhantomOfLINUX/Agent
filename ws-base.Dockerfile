@@ -1,7 +1,7 @@
 FROM polhub/node-base:latest
 
 RUN dnf update -y && dnf install -y gcc gcc-c++ make python3
-RUN dnf install findutils
+RUN dnf install -y findutils
 
 # 디렉토리 이동
 RUN mkdir /usr/agent/
