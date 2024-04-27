@@ -24,7 +24,7 @@ exports.grade = async (req, res) => {
 async function gradeQ5() {
     try {
         const { stdout, stderr } = await execAsync(
-            "find . -type f -name '*.tmp'"
+            "find /home/s1007/. -type f -name '*.tmp'"
         );
         console.log(stdout);
 
