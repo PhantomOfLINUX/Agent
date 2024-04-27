@@ -82,9 +82,9 @@ async function composeQ1() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1007/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/dir1 /home/$s1007/test/dir1 && ' +
-            'cp -r /usr/stage_file/dir2 /home/$s1007/test/dir2 && ' +
-            'cp -r /usr/stage_file/dir3 /home/$s1007/test/dir3 && ' +
+            'cp -r /usr/stage_file/dir1 /home/s1007/test/dir1 && ' +
+            'cp -r /usr/stage_file/dir2 /home/s1007/test/dir2 && ' +
+            'cp -r /usr/stage_file/dir3 /home/s1007/test/dir3 && ' +
             'cd /home/s1007'
         );
 
@@ -101,9 +101,9 @@ async function composeQ2() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1007/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/dir1 /home/$s1007/test/dir1 && ' +
-            'cp -r /usr/stage_file/dir2 /home/$s1007/test/dir2 && ' +
-            'cp -r /usr/stage_file/dir3 /home/$s1007/test/dir3 && ' +
+            'cp -r /usr/stage_file/dir1 /home/s1007/test/dir1 && ' +
+            'cp -r /usr/stage_file/dir2 /home/s1007/test/dir2 && ' +
+            'cp -r /usr/stage_file/dir3 /home/s1007/test/dir3 && ' +
             'cd /home/s1007'
         );
 
@@ -120,9 +120,9 @@ async function composeQ3() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1007/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/dir1 /home/$s1007/test/dir1 && ' +
-            'cp -r /usr/stage_file/dir2 /home/$s1007/test/dir2 && ' +
-            'cp -r /usr/stage_file/dir3 /home/$s1007/test/dir3 && ' +
+            'cp -r /usr/stage_file/dir1 /home/s1007/test/dir1 && ' +
+            'cp -r /usr/stage_file/dir2 /home/s1007/test/dir2 && ' +
+            'cp -r /usr/stage_file/dir3 /home/s1007/test/dir3 && ' +
             'cd /home/s1007'
         );
 
@@ -139,9 +139,9 @@ async function composeQ4() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1007/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/dir1 /home/$s1007/test/dir1 && ' +
-            'cp -r /usr/stage_file/dir2 /home/$s1007/test/dir2 && ' +
-            'cp -r /usr/stage_file/dir3 /home/$s1007/test/dir3 && ' +
+            'cp -r /usr/stage_file/dir1 /home/s1007/test/dir1 && ' +
+            'cp -r /usr/stage_file/dir2 /home/s1007/test/dir2 && ' +
+            'cp -r /usr/stage_file/dir3 /home/s1007/test/dir3 && ' +
             'cd /home/s1007'
         );
 
@@ -158,9 +158,9 @@ async function composeQ5() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1007/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/dir1 /home/$s1007/test/dir1 && ' +
-            'cp -r /usr/stage_file/dir2 /home/$s1007/test/dir2 && ' +
-            'cp -r /usr/stage_file/dir3 /home/$s1007/test/dir3 && ' +
+            'cp -r /usr/stage_file/dir1 /home/s1007/test/dir1 && ' +
+            'cp -r /usr/stage_file/dir2 /home/s1007/test/dir2 && ' +
+            'cp -r /usr/stage_file/dir3 /home/s1007/test/dir3 && ' +
             'cd /home/s1007'
         );
 
