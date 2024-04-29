@@ -15,7 +15,7 @@ exports.grade = async (req, res) => {
         res.json({ success: result });
         return;
     }
-    
+
     if (questionIndex === 3) {
         result = await gradeQ3();
         res.json({ success: result });
@@ -52,7 +52,7 @@ async function gradeQ2() {
         await execAsync(patchCommand);
 
         // 수정된 파일과 기대 결과 파일 비교
-        const diffCommand = "diff -q /home/$stage/test/A1 /usr/stage_file/Q2/A1";
+        const diffCommand = "diff -q /home/$stage/test/A1 /usr/stage_file/Q2/A2";
         const { stdout, stderr } = await execAsync(diffCommand);
 
         // stdout이 비어있으면 파일이 동일함을 의미
