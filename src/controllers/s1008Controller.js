@@ -45,14 +45,26 @@ exports.grade = async (req, res) => {
 };
 
 // 2번 문항에 대한 정답 판별 로직
+
+async function removeMetadataFromPatch(filePath) {
+    const cleanCommand = `sed -i '/^---/d;/^\\+\\+\\+/d' ${filePath}`;
+    await exec(cleanCommand); // 메타데이터 제거
+}
+
 async function gradeQ2() {
     try {
-        const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q2/A1toA2.patch /home/s1008/test/A1toA2.patch"
-        );
-        console.log(stdout);
+        await removeMetadataFromPatch("/usr/stage_file/Q2/A1toA2.patch");
+        await removeMetadataFromPatch("/home/s1008/test/A1toA2.patch");
 
-        const result = !stdout; // stdout 존재유무로 diff 판단
+        const command = "diff -q /usr/stage_file/Q2/A1toA2.patch /home/s1008/test/A1toA2.patch";
+        const { stdout, stderr } = await exec(command);
+
+        if (stderr) {
+            console.error(`[grade] stderr: ${stderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        const result = stdout === ''; // stdout이 비어있으면 파일이 동일함
         console.log(`[grade] result: ${result}`);
         return result;
     } catch (error) {
