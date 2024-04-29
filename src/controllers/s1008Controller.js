@@ -46,6 +46,7 @@ exports.grade = async (req, res) => {
 
 // 2번 문항에 대한 정답 판별 로직
 async function gradeQ2() {
+    let isPatchApplied = false; // 패치 적용 여부를 추적하는 플래그
     try {
         // 패치 적용
         const patchCommand = "patch /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
@@ -56,6 +57,8 @@ async function gradeQ2() {
             console.error(`[grade] patch stderr: ${patchStderr}`);
             return false;  // 오류가 있을 경우 실패로 처리
         }
+
+        isPatchApplied = true; // 패치가 성공적으로 적용됨
 
         // 수정된 파일과 기대 결과 파일 비교
         const diffCommand = "diff -q /home/$stage/test/A1 /usr/stage_file/Q2/A2";
@@ -73,9 +76,11 @@ async function gradeQ2() {
         console.error(`[grade] error: ${error}`);
         return false;
     } finally {
-        // 항상 원래 상태로 복원
-        const patchReverseCommand = "patch -R /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
-        await execAsync(patchReverseCommand);
+        if (isPatchApplied) {
+            // 항상 원래 상태로 복원
+            const patchReverseCommand = "patch -R /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
+            await execAsync(patchReverseCommand);
+        }
     }
 }
 
