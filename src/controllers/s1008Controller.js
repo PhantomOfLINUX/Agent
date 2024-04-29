@@ -45,31 +45,31 @@ exports.grade = async (req, res) => {
 };
 
 // 2번 문항에 대한 정답 판별 로직
-
-async function removeMetadataFromPatch(filePath) {
-    const cleanCommand = `sed -i '/^---/d;/^\\+\\+\\+/d' ${filePath}`;
-    await exec(cleanCommand); // 메타데이터 제거
-}
-
 async function gradeQ2() {
     try {
-        await removeMetadataFromPatch("/usr/stage_file/Q2/A1toA2.patch");
-        await removeMetadataFromPatch("/home/s1008/test/A1toA2.patch");
+        // 패치 적용
+        const patchCommand = "patch /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
+        await execAsync(patchCommand);
 
-        const command = "diff -q /usr/stage_file/Q2/A1toA2.patch /home/s1008/test/A1toA2.patch";
-        const { stdout, stderr } = await exec(command);
+        // 수정된 파일과 기대 결과 파일 비교
+        const diffCommand = "diff -q /home/$stage/test/A1 /usr/stage_file/Q2/A1";
+        const { stdout, stderr } = await execAsync(diffCommand);
 
+        // stdout이 비어있으면 파일이 동일함을 의미
         if (stderr) {
             console.error(`[grade] stderr: ${stderr}`);
             return false;  // 오류가 있을 경우 실패로 처리
         }
 
-        const result = stdout === ''; // stdout이 비어있으면 파일이 동일함
-        console.log(`[grade] result: ${result}`);
-        return result;
+        console.log(`[grade] result: ${stdout === ''}`);
+        return stdout === '';
     } catch (error) {
         console.error(`[grade] error: ${error}`);
         return false;
+    } finally {
+        // 항상 원래 상태로 복원
+        const patchReverseCommand = "patch -R /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
+        await execAsync(patchReverseCommand);
     }
 }
 
