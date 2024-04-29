@@ -49,20 +49,26 @@ async function gradeQ2() {
     try {
         // 패치 적용
         const patchCommand = "patch /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
-        await execAsync(patchCommand);
+        const { stdout: patchStdout, stderr: patchStderr } = await execAsync(patchCommand);
 
-        // 수정된 파일과 기대 결과 파일 비교
-        const diffCommand = "diff -q /home/$stage/test/A1 /usr/stage_file/Q2/A2";
-        const { stdout, stderr } = await execAsync(diffCommand);
-
-        // stdout이 비어있으면 파일이 동일함을 의미
-        if (stderr) {
-            console.error(`[grade] stderr: ${stderr}`);
+        // patch 명령어 실행 중 오류 발생 시
+        if (patchStderr) {
+            console.error(`[grade] patch stderr: ${patchStderr}`);
             return false;  // 오류가 있을 경우 실패로 처리
         }
 
-        console.log(`[grade] result: ${stdout === ''}`);
-        return stdout === '';
+        // 수정된 파일과 기대 결과 파일 비교
+        const diffCommand = "diff -q /home/$stage/test/A1 /usr/stage_file/Q2/A2";
+        const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
+
+        // diff 명령어 실행 중 오류 발생 시
+        if (diffStderr) {
+            console.error(`[grade] diff stderr: ${diffStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        console.log(`[grade] result: ${diffStdout === ''}`);
+        return diffStdout === '';
     } catch (error) {
         console.error(`[grade] error: ${error}`);
         return false;
