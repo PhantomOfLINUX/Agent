@@ -309,7 +309,7 @@ async function composeQ5() {
 }
 
 // 6번문항 환경 구성
-async function composeQ5() {
+async function composeQ6() {
     try {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1010/test &&' +
@@ -326,7 +326,7 @@ async function composeQ5() {
 }
 
 // 7번문항 환경 구성
-async function composeQ5() {
+async function composeQ7() {
     try {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1010/test &&' +
