@@ -26,7 +26,7 @@ jobs:
             - name: Load Image Version and Check Latest
               id: version
               run: |
-                  TARGETS=$(jq -c .target[] image_tag.config.json)
+                  TARGETS=$(jq -r .target[] image_tag.config.json)
                   TAGS=""
                   for TARGET in $TARGETS; do
                     TAGS+="${{ secrets.DOCKERHUB_ORGANIZATIONS }}/ws-base:$TARGET,"
