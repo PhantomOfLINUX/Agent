@@ -1,4 +1,4 @@
 {
     "latest" : true,
-    "now_version" : "s1001"
+    "target" : ["s1001", "s1002"]
 }

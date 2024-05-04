@@ -26,12 +26,16 @@ jobs:
             - name: Load Image Version and Check Latest
               id: version
               run: |
-                  VERSION=$(jq -r .now_version image_tag.config.json)
+                  TARGETS=$(jq -c .target[] image_tag.config.json)
+                  TAGS=""
+                  for TARGET in $TARGETS; do
+                    TAGS+="${{ secrets.DOCKERHUB_ORGANIZATIONS }}/ws-base:$TARGET,"
+                  done
                   LATEST=$(jq -r .latest image_tag.config.json)
-                  TAGS="${{ secrets.DOCKERHUB_ORGANIZATIONS }}/ws-base:$VERSION"
                   if [ "$LATEST" = "true" ]; then
-                    TAGS="$TAGS,${{ secrets.DOCKERHUB_ORGANIZATIONS }}/ws-base:latest"
+                    TAGS+="${{ secrets.DOCKERHUB_ORGANIZATIONS }}/ws-base:latest,"
                   fi
+                  TAGS=${TAGS%,} # Remove the trailing comma
                   echo "TAGS=$TAGS" >> $GITHUB_ENV
 
             - name: Build and Push Image
