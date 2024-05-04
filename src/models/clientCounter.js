@@ -14,6 +14,4 @@ const counter = {
     },
 };
 
-Object.freeze(counter);
-
 module.exports = counter;
