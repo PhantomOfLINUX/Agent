@@ -10,10 +10,12 @@ const stageRouter = require("./src/routes/stageRouter");
 const socketRouter = require("./src/routes/socketRouter");
 const healthChecker = require("./src/routes/healthChecker");
 const historyLogger = require("./src/routes/historyLogger");
+const clientCountRouter = require("./src/routes/userCounter");
 
 app.use(express.json());
 app.use(stageRouter);
 app.use(healthChecker);
+app.use(clientCountRouter);
 app.use(historyLogger);
 
 socketRouter(wss);
@@ -21,5 +23,4 @@ socketRouter(wss);
 const PORT = 8080;
 server.listen(PORT, () => {
     console.log(`서버 실행 Port : ${PORT}`);
-
 });
