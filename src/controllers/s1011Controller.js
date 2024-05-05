@@ -351,7 +351,12 @@ async function composeQ6() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1011/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q6/A6.txt /home/s1011/test/A6.txt && ' +
+            'cp /usr/stage_file/Q6/A6-1.txt /home/s1011/test/A6-1.txt && ' +
+            'cp /usr/stage_file/Q6/A6-2.txt /home/s1011/test/A6-2.txt && ' +
+            'cp /usr/stage_file/Q6/A6-3.txt /home/s1011/test/A6-3.txt && ' +
+            'cp /usr/stage_file/Q6/A6-4.txt /home/s1011/test/A6-4.txt && ' +
+            'cp /usr/stage_file/Q6/A6-5.txt /home/s1011/test/A6-5.txt && ' +
+            'cp /usr/stage_file/Q6/A6-6.txt /home/s1011/test/A6-6.txt && ' +
             'cd /home/s1011'
         );
 
