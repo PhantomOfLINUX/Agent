@@ -67,7 +67,7 @@ async function gradeQ1() {
     let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
         // 패치 적용
-        const tarCommand = "tar -xvf /home/s1012/test/docs.tar -C /usr/stage_file/Q1/check_diff_user";
+        const tarCommand = "tar -xvf /home/s1012/test/docs.tar -C /usr/stage_file/Q1/check";
         const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
 
         // patch 명령어 실행 중 오류 발생 시
@@ -79,7 +79,7 @@ async function gradeQ1() {
         isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
 
         // 수정된 파일과 기대 결과 파일 비교
-        const diffCommand = "diff -r /usr/stage_file/Q1/check_user_dir /usr/stage_file/Q1/documents";
+        const diffCommand = "diff -r /usr/stage_file/Q1/check /usr/stage_file/Q1/documents";
         const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
 
         // diff 명령어 실행 중 오류 발생 시
