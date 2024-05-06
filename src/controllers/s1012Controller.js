@@ -63,32 +63,23 @@ exports.grade = async (req, res) => {
 };
 
 // 1번 문항에 대한 정답 판별 로직
-/*
 async function gradeQ1() {
-    let isPatchApplied = false; // 패치 적용 여부를 추적하는 플래그
+    let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
         // 패치 적용
-        const patchCommand = "patch /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
-        const { stdout: patchStdout, stderr: patchStderr } = await execAsync(patchCommand);
+        const tarCommand = "tar -xvf /home/s1012/test/docs.tar -C /usr/stage_file/Q1/check_diff_user";
+        const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
 
         // patch 명령어 실행 중 오류 발생 시
-        if (patchStderr) {
-            console.error(`[grade] patch stderr: ${patchStderr}`);
+        if (tarStderr) {
+            console.error(`[grade] patch stderr: ${tarStderr}`);
             return false;  // 오류가 있을 경우 실패로 처리
         }
 
-        const { stdout, stderr } = await execAsync(
-            'cd /home/s1012/test &&' +
-            'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q1/A1.txt /home/s1012/test/A1.txt && ' +
-            'cd /home/s1012'
-        );
-
-
-        isPatchApplied = true; // 패치가 성공적으로 적용됨
+        isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
 
         // 수정된 파일과 기대 결과 파일 비교
-        const diffCommand = "diff -q /home/$stage/test/A1 /usr/stage_file/Q2/A2";
+        const diffCommand = "diff -r /usr/stage_file/Q1/check_user_dir /usr/stage_file/Q1/documents";
         const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
 
         // diff 명령어 실행 중 오류 발생 시
@@ -103,31 +94,11 @@ async function gradeQ1() {
         console.error(`[grade] error: ${error}`);
         return false;
     } finally {
-        if (isPatchApplied) {
+        if (isTarApplied) {
             // 항상 원래 상태로 복원
-            const patchReverseCommand = "patch -R /home/$stage/test/A1 /home/$stage/test/A1toA2.patch";
-            await execAsync(patchReverseCommand);
+            const tarReverseCommand = "rm -rf /usr/stage_file/Q1/check_user_dir/*";
+            await execAsync(tarReverseCommand);
         }
-    }
-}
-*/
-
-// 1번 문항에 대한 정답 판별 로직
-async function gradeQ1() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            "rm -rf /usr/stage_file/Q1/check_diff_user/a &&" +
-            "tar -xvf /home/s1012/test/docs.tar -C /usr/stage_file/Q1/check_diff_user &&" +
-            "diff -r /usr/stage_file/Q1/check_diff_user /usr/stage_file/Q1/documents &&"
-        );
-        console.log(stdout);
-
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
-    } catch (error) {
-        console.error(`[grade] error: ${error}`);
-        return false;
     }
 }
 
