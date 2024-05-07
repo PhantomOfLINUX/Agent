@@ -40,24 +40,6 @@ exports.grade = async (req, res) => {
         return;
     }
 
-    if (questionIndex === 7) {
-        result = await gradeQ7();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 8) {
-        result = await gradeQ8();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 9) {
-        result = await gradeQ9();
-        res.json({ success: result });
-        return;
-    }
-
     // 추가 번호 확장가능
     res.json({ success: false });
 };
@@ -255,24 +237,6 @@ exports.compose = async (req, res) => {
 
     if (questionIndex === 6) {
         result = await composeQ6();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 7) {
-        result = await composeQ7();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 8) {
-        result = await composeQ8();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 9) {
-        result = await composeQ9();
         res.json({ success: result });
         return;
     }
