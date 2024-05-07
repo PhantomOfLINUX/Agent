@@ -161,80 +161,23 @@ async function gradeQ3() {
 
 // 5번 문항에 대한 정답 판별 로직
 async function gradeQ5() {
-    let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
-        await execAsync("mkdir /home/s1012/test/check");
+        const { stdout, stderr } = await execAsync(
+            "diff -r /usr/stage_file/Q5/check /home/s1012/test/check"
+        );
+        console.log(stdout);
 
-        //  적용
-        const tarCommand = "tar -xzvf /home/s1012/test/logs.tar.gz -C /home/s1012/test/check";
-        const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
-
-        // patch 명령어 실행 중 오류 발생 시
-        if (tarStderr) {
-            console.error(`[grade] patch stderr: ${tarStderr}`);
-            return false;  // 오류가 있을 경우 실패로 처리
-        }
-
-        isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
-
-        // 수정된 파일과 기대 결과 파일 비교
-        const diffCommand = "diff -r /home/s1012/test/check /usr/stage_file/Q5/logs";
-        const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
-
-        // diff 명령어 실행 중 오류 발생 시
-        if (diffStderr) {
-            console.error(`[grade] diff stderr: ${diffStderr}`);
-            return false;  // 오류가 있을 경우 실패로 처리
-        }
-
-        console.log(`[grade] result: ${diffStdout === ''}`);
-        return diffStdout === '';
+        const result = !stdout; // stdout 존재유무로 diff 판단
+        console.log(`[grade] result: ${result}`);
+        return result;
     } catch (error) {
         console.error(`[grade] error: ${error}`);
         return false;
-    } finally {
-        // 항상 원래 상태로 복원
-        const tarReverseCommand = "rm -rf /home/s1012/test/check";
-        await execAsync(tarReverseCommand);
     }
 }
 
 // 6번 문항에 대한 정답 판별 로직
 async function gradeQ6() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            "diff -r /usr/stage_file/Q6/logs /home/s1012/test/logs"
-        );
-        console.log(stdout);
-
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
-    } catch (error) {
-        console.error(`[grade] error: ${error}`);
-        return false;
-    }
-}
-
-// 7번 문항에 대한 정답 판별 로직
-async function gradeQ7() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            "diff -r /usr/stage_file/Q7/check /home/s1012/test/check"
-        );
-        console.log(stdout);
-
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
-    } catch (error) {
-        console.error(`[grade] error: ${error}`);
-        return false;
-    }
-}
-
-// 8번 문항에 대한 정답 판별 로직
-async function gradeQ8() {
     let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
         await execAsync("mkdir /home/s1012/test/check");
@@ -252,7 +195,7 @@ async function gradeQ8() {
         isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
 
         // 수정된 파일과 기대 결과 파일 비교
-        const diffCommand = "diff -r /home/s1012/test/check /usr/stage_file/Q8/check";
+        const diffCommand = "diff -r /home/s1012/test/check /usr/stage_file/Q6/check";
         const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
 
         // diff 명령어 실행 중 오류 발생 시
@@ -273,22 +216,6 @@ async function gradeQ8() {
     }
 }
 
-// 9번 문항에 대한 정답 판별 로직
-async function gradeQ9() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q9/A9_Important.txt /home/s1012/test/A9_Important.txt"
-        );
-        console.log(stdout);
-
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
-    } catch (error) {
-        console.error(`[grade] error: ${error}`);
-        return false;
-    }
-}
 
 // 환경구성 받는 컨트롤 메서드
 exports.compose = async (req, res) => {
@@ -428,7 +355,7 @@ async function composeQ5() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/Q5/logs /home/s1012/test/logs && ' +
+            'cp /usr/stage_file/Q5/docs.tar /home/s1012/test/docs.tar && ' +
             'cd /home/s1012'
         );
 
@@ -445,7 +372,8 @@ async function composeQ6() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q6/logs.tar.gz /home/s1012/test/logs.tar.gz && ' +
+            'cp -r /usr/stage_file/Q6/images /home/s1012/test/images && ' +
+            'cp -r /usr/stage_file/Q6/videos /home/s1012/test/videos && ' +
             'cd /home/s1012'
         );
 
@@ -455,56 +383,3 @@ async function composeQ6() {
         return false;
     }
 }
-
-// 7번문항 환경 구성
-async function composeQ7() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            'cd /home/s1012/test &&' +
-            'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q7/docs.tar /home/s1012/test/docs.tar && ' +
-            'cd /home/s1012'
-        );
-
-        return true;
-    } catch (error) {
-        console.error(`[compose] error: ${error}`);
-        return false;
-    }
-}
-
-// 8번문항 환경 구성
-async function composeQ8() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            'cd /home/s1012/test &&' +
-            'rm -rf .[!.]* * &&' +
-            'cp -r /usr/stage_file/Q8/images /home/s1012/test/images && ' +
-            'cp -r /usr/stage_file/Q8/videos /home/s1012/test/videos && ' +
-            'cd /home/s1012'
-        );
-
-        return true;
-    } catch (error) {
-        console.error(`[compose] error: ${error}`);
-        return false;
-    }
-}
-
-// 9번문항 환경 구성
-async function composeQ9() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            'cd /home/s1012/test &&' +
-            'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q9/A9.txt /home/s1012/test/A9.txt && ' +
-            'cd /home/s1012'
-        );
-
-        return true;
-    } catch (error) {
-        console.error(`[compose] error: ${error}`);
-        return false;
-    }
-}
-
