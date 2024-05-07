@@ -104,25 +104,49 @@ async function gradeQ1() {
 
 // 2번 문항에 대한 정답 판별 로직
 async function gradeQ2() {
+    let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
-        const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q2/A2_warning.txt /home/s1012/test/A2_warning.txt"
-        );
-        console.log(stdout);
+        await execAsync("mkdir /home/s1012/test/check");
 
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
+        //  적용
+        const tarCommand = "tar -xvf /home/s1012/test/docs.tar -C /home/s1012/test/check";
+        const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
+
+        // patch 명령어 실행 중 오류 발생 시
+        if (tarStderr) {
+            console.error(`[grade] patch stderr: ${tarStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
+
+        // 수정된 파일과 기대 결과 파일 비교
+        const diffCommand = "diff -r /home/s1012/test/check /usr/stage_file/Q2/check";
+        const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
+
+        // diff 명령어 실행 중 오류 발생 시
+        if (diffStderr) {
+            console.error(`[grade] diff stderr: ${diffStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        console.log(`[grade] result: ${diffStdout === ''}`);
+        return diffStdout === '';
     } catch (error) {
         console.error(`[grade] error: ${error}`);
         return false;
+    } finally {
+        // 항상 원래 상태로 복원
+        const tarReverseCommand = "rm -rf /home/s1012/test/check";
+        await execAsync(tarReverseCommand);
     }
 }
+
 // 3번 문항에 대한 정답 판별 로직
 async function gradeQ3() {
     try {
         const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q3/A3_Failed.txt /home/s1012/test/A3_Failed.txt"
+            "diff /usr/stage_file/Q3/summary.txt /home/s1012/test/summary.txt"
         );
         console.log(stdout);
 
@@ -135,22 +159,43 @@ async function gradeQ3() {
     }
 }
 
-
-
 // 5번 문항에 대한 정답 판별 로직
 async function gradeQ5() {
+    let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
-        const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q5/A5_the.txt /home/s1012/test/A5_the.txt"
-        );
-        console.log(stdout);
+        await execAsync("mkdir /home/s1012/test/check");
 
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
+        //  적용
+        const tarCommand = "tar -xzvf /home/s1012/test/logs.tar.gz -C /home/s1012/test/check";
+        const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
+
+        // patch 명령어 실행 중 오류 발생 시
+        if (tarStderr) {
+            console.error(`[grade] patch stderr: ${tarStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
+
+        // 수정된 파일과 기대 결과 파일 비교
+        const diffCommand = "diff -r /home/s1012/test/check /usr/stage_file/Q5/logs";
+        const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
+
+        // diff 명령어 실행 중 오류 발생 시
+        if (diffStderr) {
+            console.error(`[grade] diff stderr: ${diffStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        console.log(`[grade] result: ${diffStdout === ''}`);
+        return diffStdout === '';
     } catch (error) {
         console.error(`[grade] error: ${error}`);
         return false;
+    } finally {
+        // 항상 원래 상태로 복원
+        const tarReverseCommand = "rm -rf /home/s1012/test/check";
+        await execAsync(tarReverseCommand);
     }
 }
 
@@ -158,7 +203,7 @@ async function gradeQ5() {
 async function gradeQ6() {
     try {
         const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q6/localhost.txt /home/s1012/test/localhost.txt"
+            "diff -r /usr/stage_file/Q6/logs /home/s1012/test/logs"
         );
         console.log(stdout);
 
@@ -175,7 +220,7 @@ async function gradeQ6() {
 async function gradeQ7() {
     try {
         const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q7/A7_no_theme.txt /home/s1012/test/A7_no_theme.txt"
+            "diff -r /usr/stage_file/Q7/check /home/s1012/test/check"
         );
         console.log(stdout);
 
@@ -190,18 +235,41 @@ async function gradeQ7() {
 
 // 8번 문항에 대한 정답 판별 로직
 async function gradeQ8() {
+    let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
-        const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q8/A8_error_warning.txt /home/s1012/test/A8_error_warning.txt"
-        );
-        console.log(stdout);
+        await execAsync("mkdir /home/s1012/test/check");
 
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
+        //  적용
+        const tarCommand = "tar -xvf /home/s1012/test/media.tar -C /home/s1012/test/check";
+        const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
+
+        // patch 명령어 실행 중 오류 발생 시
+        if (tarStderr) {
+            console.error(`[grade] patch stderr: ${tarStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
+
+        // 수정된 파일과 기대 결과 파일 비교
+        const diffCommand = "diff -r /home/s1012/test/check /usr/stage_file/Q8/check";
+        const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
+
+        // diff 명령어 실행 중 오류 발생 시
+        if (diffStderr) {
+            console.error(`[grade] diff stderr: ${diffStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
+        }
+
+        console.log(`[grade] result: ${diffStdout === ''}`);
+        return diffStdout === '';
     } catch (error) {
         console.error(`[grade] error: ${error}`);
         return false;
+    } finally {
+        // 항상 원래 상태로 복원
+        const tarReverseCommand = "rm -rf /home/s1012/test/check";
+        await execAsync(tarReverseCommand);
     }
 }
 
@@ -291,7 +359,7 @@ async function composeQ1() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q1/A1.txt /home/s1012/test/A1.txt && ' +
+            'cp -r /usr/stage_file/Q1/documents /home/$stage/test/documents && ' +
             'cd /home/s1012'
         );
 
@@ -308,7 +376,8 @@ async function composeQ2() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q2/A2.txt /home/s1012/test/A2.txt && ' +
+            'cp /usr/stage_file/Q2/docs.tar /home/s1012/test/docs.tar && ' +
+            'cp /usr/stage_file/Q2/update.log /home/s1012/test/update.log && ' +
             'cd /home/s1012'
         );
 
@@ -325,7 +394,7 @@ async function composeQ3() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q3/A3.txt /home/s1012/test/A3.txt && ' +
+            'cp /usr/stage_file/Q3/docs.tar /home/s1012/test/docs.tar && ' +
             'cd /home/s1012'
         );
 
@@ -342,7 +411,7 @@ async function composeQ4() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q4/A4.txt /home/s1012/test/A4.txt && ' +
+            'cp /usr/stage_file/Q4/docs.tar /home/s1012/test/docs.tar && ' +
             'cd /home/s1012'
         );
 
@@ -359,7 +428,7 @@ async function composeQ5() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q5/A5.txt /home/s1012/test/A5.txt && ' +
+            'cp -r /usr/stage_file/Q5/logs /home/s1012/test/logs && ' +
             'cd /home/s1012'
         );
 
@@ -376,12 +445,7 @@ async function composeQ6() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q6/A6-1.txt /home/s1012/test/A6-1.txt && ' +
-            'cp /usr/stage_file/Q6/A6-2.txt /home/s1012/test/A6-2.txt && ' +
-            'cp /usr/stage_file/Q6/A6-3.txt /home/s1012/test/A6-3.txt && ' +
-            'cp /usr/stage_file/Q6/A6-4.txt /home/s1012/test/A6-4.txt && ' +
-            'cp /usr/stage_file/Q6/A6-5.txt /home/s1012/test/A6-5.txt && ' +
-            'cp /usr/stage_file/Q6/A6-6.txt /home/s1012/test/A6-6.txt && ' +
+            'cp /usr/stage_file/Q6/logs.tar.gz /home/s1012/test/logs.tar.gz && ' +
             'cd /home/s1012'
         );
 
@@ -398,7 +462,7 @@ async function composeQ7() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q7/A7.txt /home/s1012/test/A7.txt && ' +
+            'cp /usr/stage_file/Q7/docs.tar /home/s1012/test/docs.tar && ' +
             'cd /home/s1012'
         );
 
@@ -415,7 +479,8 @@ async function composeQ8() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1012/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q8/A8.txt /home/s1012/test/A8.txt && ' +
+            'cp -r /usr/stage_file/Q8/images /home/s1012/test/images && ' +
+            'cp -r /usr/stage_file/Q8/videos /home/s1012/test/videos && ' +
             'cd /home/s1012'
         );
 
