@@ -137,7 +137,7 @@ async function gradeQ4() {
         await execAsync("mkdir /home/s1013/test/check");
 
         //  적용
-        const tarCommand = "cp /home/s1013/test/logs.tar.gz /home/s1013/test/check/logs.tar.gz &&" + "tar -xzvf /home/s1013/test/check/logs.tar.gz";
+        const tarCommand = "cp /home/s1013/test/logs.tar.gz /home/s1013/test/check/logs.tar.gz &&" + "cd /home/s1013/test/check && tar -xzvf /home/s1013/test/check/logs.tar.gz";
         const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
 
         // tarCommand 명령어 실행 중 오류 발생 시
