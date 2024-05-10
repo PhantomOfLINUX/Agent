@@ -225,8 +225,7 @@ async function composeQ2() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1013/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q2/docs.tar /home/s1013/test/docs.tar && ' +
-            'cp /usr/stage_file/Q2/update.log /home/s1013/test/update.log && ' +
+            'cp /usr/stage_file/Q2/example.txt.gz /home/s1013/test/example.txt.gz &&' +
             'cd /home/s1013'
         );
 
@@ -243,7 +242,7 @@ async function composeQ3() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1013/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q3/docs.tar /home/s1013/test/docs.tar && ' +
+            'cp /usr/stage_file/Q3/document.txt /home/s1013/test/document.txt && ' +
             'cd /home/s1013'
         );
 
@@ -260,7 +259,7 @@ async function composeQ4() {
         const { stdout, stderr } = await execAsync(
             'cd /home/s1013/test &&' +
             'rm -rf .[!.]* * &&' +
-            'cp /usr/stage_file/Q4/docs.tar /home/s1013/test/docs.tar && ' +
+            'cp -r /usr/stage_file/Q4/logs /home/s1013/test/logs && ' +
             'cd /home/s1013'
         );
 
