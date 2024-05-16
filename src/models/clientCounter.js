@@ -1,21 +1,17 @@
-//예시
-
-let count = 0;
-
-const clientCounter = {
-    increment() {
-        count += 1;
+const counter = {
+    count: 0,
+    increase: () => {
+        counter.count++;
     },
-    decrement() {
-        if (count > 0) {
-            count -= 1;
+    decrease: () => {
+        if (counter.count <= 0) {
+            return;
         }
+        counter.count--;
     },
-    getCount() {
-        return count;
-    }
+    getCount: () => {
+        return counter.count;
+    },
 };
 
-Object.freeze(clientCounter);
-
-module.exports = clientCounter;
+module.exports = counter;

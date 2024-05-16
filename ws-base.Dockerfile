@@ -2,7 +2,12 @@ FROM polhub/node-base:latest
 
 RUN dnf update -y && dnf install -y gcc gcc-c++ make python3
 RUN dnf install -y findutils
+# patch 명령어 설치
 RUN dnf install -y patch
+# vim 설치
+RUN dnf install -y vim
+# clear 명령어 설치
+RUN dnf install -y ncurses
 
 # 디렉토리 이동
 RUN mkdir /usr/agent/
