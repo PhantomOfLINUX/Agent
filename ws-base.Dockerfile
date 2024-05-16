@@ -8,6 +8,8 @@ RUN dnf install -y patch
 RUN dnf install -y vim
 # clear 명령어 설치
 RUN dnf install -y ncurses
+# sudo 명령어 설치
+RUN dnf install -y sudo
 
 # 디렉토리 이동
 RUN mkdir /usr/agent/
