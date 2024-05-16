@@ -10,6 +10,8 @@ RUN dnf install -y vim
 RUN dnf install -y ncurses
 # sudo 명령어 설치
 RUN dnf install -y sudo
+# passwd 명령어 설치
+RUN dnf install -y passwd
 
 # 디렉토리 이동
 RUN mkdir /usr/agent/
