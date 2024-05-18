@@ -46,7 +46,7 @@ async function gradeQ1() {
         );
         console.log(stdout);
 
-        const result = stdout; // stdout 존재유무로 diff 판단
+        const result = !!stdout; // stdout 존재유무로 diff 판단
         console.log(`[grade] result: ${result}`);
         return result;
     } catch (error) {
