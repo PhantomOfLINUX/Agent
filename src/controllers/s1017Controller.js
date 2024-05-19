@@ -51,7 +51,7 @@ async function gradeQ2() {
         // 사용자 계정이 존재하지 않을 경우, /home/testuser 디렉토리 존재 여부 확인
         try {
             await fs.access('/home/testuser2');
-            console.log(`[grade] result: false (/home/testuser directory exists)`);
+            console.log(`[grade] result: false (/home/testuser2 directory exists)`);
             return false;
         } catch (dirError) {
             console.log(`[grade] result: true (user and directory do not exist)`);
