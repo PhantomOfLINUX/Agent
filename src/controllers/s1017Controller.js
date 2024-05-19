@@ -29,42 +29,33 @@ exports.grade = async (req, res) => {
 // 1번 문항에 대한 정답 판별 로직
 async function gradeQ1() {
     try {
-        const { stdout, stderr } = await execAsync(
-            "getent passwd testuser"
-        );
-        console.log(stdout);
-
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
-    } catch (error) {
-        console.error(`[grade] error: ${error}`);
+        await execAsync("id -u testuser");
+        // 사용자 계정이 존재하는 경우
+        console.log(`[grade] result: false`);
         return false;
+    } catch (error) {
+        // 사용자 계정이 존재하지 않는 경우
+        console.log(`[grade] result: true`);
+        return true;
     }
 }
 
 // 2번 문항에 대한 정답 판별 로직
 async function gradeQ2() {
     try {
-        // Check if the user 'alice' exists
-        const { stdout, stderr } = await execAsync("getent passwd testuser2");
-        console.log(stdout);
-
-        // Check if the /home/alice directory exists
-        let dirExists = false;
-        try {
-            await fs.access('/home/testuser2');
-            dirExists = true;
-        } catch (dirError) {
-            console.error(`[grade] directory error: ${dirError}`);
-        }
-
-        // Result is true if both the user exists and the directory exists
-        const result = !stdout && dirExists;
-        console.log(`[grade] result: ${result}`);
-        return result;
-    } catch (error) {
-        console.error(`[grade] error: ${error}`);
+        // 사용자 계정 확인
+        await execAsync("id -u testuser");
+        console.log(`[grade] result: false (user exists)`);
         return false;
+    } catch (error) {
+        // 사용자 계정이 존재하지 않을 경우, /home/testuser 디렉토리 존재 여부 확인
+        try {
+            await fs.access('/home/testuser');
+            console.log(`[grade] result: false (/home/testuser directory exists)`);
+            return false;
+        } catch (dirError) {
+            console.log(`[grade] result: true (user and directory do not exist)`);
+            return true;
+        }
     }
 }
