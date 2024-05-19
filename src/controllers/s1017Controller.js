@@ -44,13 +44,13 @@ async function gradeQ1() {
 async function gradeQ2() {
     try {
         // 사용자 계정 확인
-        await execAsync("id -u testuser");
+        await execAsync("id -u testuser2");
         console.log(`[grade] result: false (user exists)`);
         return false;
     } catch (error) {
         // 사용자 계정이 존재하지 않을 경우, /home/testuser 디렉토리 존재 여부 확인
         try {
-            await fs.access('/home/testuser');
+            await fs.access('/home/testuser2');
             console.log(`[grade] result: false (/home/testuser directory exists)`);
             return false;
         } catch (dirError) {
