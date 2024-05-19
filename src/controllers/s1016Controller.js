@@ -128,7 +128,7 @@ async function gradeQ4() {
 async function gradeQ5() {
     try {
         const { stdout, stderr } = await execAsync(
-            "getent passwd susan"
+            "getent passwd sue"
         );
         console.log(stdout);
 
@@ -145,7 +145,7 @@ async function gradeQ5() {
 async function gradeQ6() {
     try {
         const { stdout, stderr } = await execAsync(
-            "chage -l sue | grep 'Dec 31, 2024'"
+            "chage -l bob | grep 'Dec 31, 2024'"
         );
         console.log(stdout);
 

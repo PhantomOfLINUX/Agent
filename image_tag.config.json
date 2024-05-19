@@ -1,6 +1,6 @@
 {
-    "latest": false,
+    "latest": true,
     "target": [
-        "s1015"
+        "s1014", "s1015", "s1016"
     ]
 }
