@@ -22,36 +22,6 @@ exports.grade = async (req, res) => {
         return;
     }
 
-    if (questionIndex === 3) {
-        result = await gradeQ3();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 4) {
-        result = await gradeQ4();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 5) {
-        result = await gradeQ5();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 6) {
-        result = await gradeQ6();
-        res.json({ success: result });
-        return;
-    }
-
-    if (questionIndex === 7) {
-        result = await gradeQ7();
-        res.json({ success: result });
-        return;
-    }
-
     // 추가 번호 확장가능
     res.json({ success: false });
 };
