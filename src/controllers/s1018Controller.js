@@ -34,16 +34,24 @@ exports.grade = async (req, res) => {
     res.json({ success: result });
 };
 
+// /etc/shadow 파일의 마지막 수정 시간을 확인하는 유틸리티 함수
+async function checkPasswordChangeDate(username) {
+    try {
+        const { stdout } = await execAsync(`sudo stat -c %Y /etc/shadow`);
+        const lastModifiedTimestamp = parseInt(stdout.trim(), 10);
+        const lastModifiedDate = new Date(lastModifiedTimestamp * 1000).toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        return lastModifiedDate === today;
+    } catch (error) {
+        console.error(`[grade] Error checking password change date: ${error.message}`);
+        return false;
+    }
+}
+
 // 1번 문항에 대한 정답 판별 로직 (현재 로그인한 사용자의 비밀번호 변경 확인)
 async function gradeQ1() {
     try {
-        const { stdout: user } = await execAsync("whoami");
-        const username = user.trim();
-        // 비밀번호 변경 로그 확인
-        const { stdout } = await execAsync(`grep "password changed for ${username}" /var/log/auth.log`);
-        const today = new Date().toISOString().split('T')[0];
-        const passwordChangedToday = stdout.includes(today);
-
+        const passwordChangedToday = await checkPasswordChangeDate();
         console.log(`[grade] result: ${passwordChangedToday}`);
         return passwordChangedToday;
     } catch (error) {
@@ -54,13 +62,9 @@ async function gradeQ1() {
 
 // 2번 문항에 대한 정답 판별 로직 ("user1"의 비밀번호 변경 확인)
 async function gradeQ2() {
-    const username = "user2";
+    const username = "user1";
     try {
-        // 비밀번호 변경 로그 확인
-        const { stdout } = await execAsync(`grep "password changed for ${username}" /var/log/auth.log`);
-        const today = new Date().toISOString().split('T')[0];
-        const passwordChangedToday = stdout.includes(today);
-
+        const passwordChangedToday = await checkPasswordChangeDate(username);
         console.log(`[grade] result: ${passwordChangedToday}`);
         return passwordChangedToday;
     } catch (error) {
@@ -71,7 +75,7 @@ async function gradeQ2() {
 
 // 3번 문항에 대한 정답 판별 로직 ("user2"의 비밀번호 만료 설정 확인)
 async function gradeQ3() {
-    const username = "user3";
+    const username = "user2";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
         const passwordExpired = stdout.includes("Password expires : password must be changed");
@@ -85,7 +89,7 @@ async function gradeQ3() {
 
 // 4번 문항에 대한 정답 판별 로직 ("user3"의 비밀번호 변경 불가능 기간 설정 확인)
 async function gradeQ4() {
-    const username = "user4";
+    const username = "user3";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
         const minDays = stdout.match(/Minimum number of days between password change\s*:\s*(\d+)/);
@@ -100,7 +104,7 @@ async function gradeQ4() {
 
 // 5번 문항에 대한 정답 판별 로직 ("user4"의 비밀번호 최대 사용 기간 설정 확인)
 async function gradeQ5() {
-    const username = "user5";
+    const username = "user4";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
         const maxDays = stdout.match(/Maximum number of days between password change\s*:\s*(\d+)/);
@@ -115,7 +119,7 @@ async function gradeQ5() {
 
 // 6번 문항에 대한 정답 판별 로직 ("user5"의 경고 기간 설정 확인)
 async function gradeQ6() {
-    const username = "user6";
+    const username = "user5";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
         const warningDays = stdout.match(/Number of days of warning before password expires\s*:\s*(\d+)/);
