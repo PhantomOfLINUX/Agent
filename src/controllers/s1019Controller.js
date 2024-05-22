@@ -100,12 +100,34 @@ async function gradeQ6() {
     const username = "john";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
-        const inactiveDays = stdout.match(/Password inactive\s*:\s*(\d+|never)/);
-        const result = inactiveDays && inactiveDays[1] !== 'never' && parseInt(inactiveDays[1], 10) === 7;
+        console.log(`[debug] chage output: ${stdout}`);
+
+        const inactiveDaysMatch = stdout.match(/Password inactive\s*:\s*(.*)/);
+
+        if (!inactiveDaysMatch) {
+            console.log(`[grade] result: false - no match for "Password inactive"`);
+            return false;
+        }
+
+        const inactiveDateStr = inactiveDaysMatch[1].trim();
+        console.log(`[debug] inactiveDateStr: ${inactiveDateStr}`);
+
+        // 비활성화 날짜를 Date 객체로 변환
+        const inactiveDate = new Date(inactiveDateStr);
+        const currentDate = new Date();
+
+        // 날짜 차이를 일수로 계산
+        const diffTime = Math.abs(inactiveDate - currentDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        console.log(`[debug] diffDays: ${diffDays}`);
+
+        const result = diffDays === 7;
+
         console.log(`[grade] result: ${result}`);
         return result;
     } catch (error) {
-        console.log(`[grade] result: false`);
+        console.error(`[grade] error: ${error.message}`);
         return false;
     }
 }
