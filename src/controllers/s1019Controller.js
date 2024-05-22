@@ -102,26 +102,34 @@ async function gradeQ6() {
         const { stdout } = await execAsync(`chage -l ${username}`);
         console.log(`[debug] chage output: ${stdout}`);
 
+        const passwordExpiresMatch = stdout.match(/Password expires\s*:\s*(.*)/);
         const inactiveDaysMatch = stdout.match(/Password inactive\s*:\s*(.*)/);
 
-        if (!inactiveDaysMatch) {
-            console.log(`[grade] result: false - no match for "Password inactive"`);
+        if (!passwordExpiresMatch || !inactiveDaysMatch) {
+            console.log(`[grade] result: false - no match for "Password expires" or "Password inactive"`);
             return false;
         }
 
+        const passwordExpiresDateStr = passwordExpiresMatch[1].trim();
         const inactiveDateStr = inactiveDaysMatch[1].trim();
+        console.log(`[debug] passwordExpiresDateStr: ${passwordExpiresDateStr}`);
         console.log(`[debug] inactiveDateStr: ${inactiveDateStr}`);
 
-        // 비활성화 날짜를 Date 객체로 변환
+        const passwordExpiresDate = new Date(passwordExpiresDateStr);
         const inactiveDate = new Date(inactiveDateStr);
-        const currentDate = new Date();
 
-        // 날짜 차이를 일수로 계산
-        const diffTime = Math.abs(inactiveDate - currentDate);
+        if (isNaN(passwordExpiresDate) || isNaN(inactiveDate)) {
+            console.log(`[grade] result: false - invalid date format`);
+            return false;
+        }
+
+        // 암호 만료 날짜와 비활성화 날짜의 차이 계산
+        const diffTime = inactiveDate - passwordExpiresDate;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         console.log(`[debug] diffDays: ${diffDays}`);
 
+        // 날짜 차이가 정확히 7일인지 확인
         const result = diffDays === 7;
 
         console.log(`[grade] result: ${result}`);
@@ -131,3 +139,5 @@ async function gradeQ6() {
         return false;
     }
 }
+
+
