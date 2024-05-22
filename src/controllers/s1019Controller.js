@@ -100,22 +100,12 @@ async function gradeQ6() {
     const username = "john";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
-        console.log(`[debug] chage output: ${stdout}`);
-
-        const inactiveDaysMatch = stdout.match(/Password inactive\s*:\s*(\d+|never)/);
-
-        if (!inactiveDaysMatch) {
-            console.log(`[grade] result: false - no match for "Password inactive"`);
-            return false;
-        }
-
-        const inactiveDays = inactiveDaysMatch[1];
-        const result = inactiveDays !== 'never' && parseInt(inactiveDays, 10) === 7;
-
+        const inactiveDays = stdout.match(/Password inactive\s*:\s*(\d+|never)/);
+        const result = inactiveDays && inactiveDays[1] !== 'never' && parseInt(inactiveDays[1], 10) === 7;
         console.log(`[grade] result: ${result}`);
         return result;
     } catch (error) {
-        console.error(`[grade] error: ${error.message}`);
+        console.log(`[grade] result: false`);
         return false;
     }
 }
