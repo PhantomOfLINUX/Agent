@@ -79,24 +79,18 @@ async function gradeQ4() {
 }
 
 // 5번 문항에 대한 정답 판별 로직 (john 사용자의 암호를 2024년 12월 31일에 만료되도록 설정 확인)
-// 채점코드 다시 짤것!!!!!!!!!!!!!!!!!!!!!!!!!!
 async function gradeQ5() {
-    const username = "john";
     try {
-        const { stdout } = await execAsync(`chage -l ${username}`);
-        const expireDateMatch = stdout.match(/Password expires\s*:\s*([a-zA-Z]+ \d+, \d+)/);
-        if (expireDateMatch) {
-            const expireDate = new Date(expireDateMatch[1]);
-            const targetDate = new Date('2024-12-31');
-            const result = expireDate.getTime() === targetDate.getTime();
-            console.log(`[grade] result: ${result}`);
-            return result;
-        } else {
-            console.log(`[grade] result: false (no match)`);
-            return false;
-        }
+        const { stdout, stderr } = await execAsync(
+            "chage -l john | grep '^Account expires.*Dec 31, 2024$'"
+        );
+        console.log(stdout);
+
+        const result = !!stdout; // stdout 존재유무로 diff 판단
+        console.log(`[grade] result: ${result}`);
+        return result;
     } catch (error) {
-        console.log(`[grade] result: false (error)`);
+        console.error(`[grade] error: ${error}`);
         return false;
     }
 }
@@ -106,12 +100,22 @@ async function gradeQ6() {
     const username = "john";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
-        const inactiveDays = stdout.match(/Password inactive\s*:\s*(\d+|never)/);
-        const result = inactiveDays && inactiveDays[1] !== 'never' && parseInt(inactiveDays[1], 10) === 7;
+        console.log(`[debug] chage output: ${stdout}`);
+
+        const inactiveDaysMatch = stdout.match(/Password inactive\s*:\s*(\d+|never)/);
+
+        if (!inactiveDaysMatch) {
+            console.log(`[grade] result: false - no match for "Password inactive"`);
+            return false;
+        }
+
+        const inactiveDays = inactiveDaysMatch[1];
+        const result = inactiveDays !== 'never' && parseInt(inactiveDays, 10) === 7;
+
         console.log(`[grade] result: ${result}`);
         return result;
     } catch (error) {
-        console.log(`[grade] result: false`);
+        console.error(`[grade] error: ${error.message}`);
         return false;
     }
 }
