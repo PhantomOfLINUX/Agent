@@ -52,14 +52,17 @@ async function gradeQ1() {
 }
 // 2번 문항에 대한 정답 판별 로직 ("user2"의 비밀번호 만료 설정 확인)
 async function gradeQ2() {
-    const username = "user2";
     try {
-        const { stdout } = await execAsync(`chage -l ${username}`);
-        const passwordExpired = stdout.includes("Password expires : password must be changed");
-        console.log(`[grade] result: ${passwordExpired}`);
-        return passwordExpired;
+        const { stdout, stderr } = await execAsync(
+            "chage -l user2 | grep 'password must be changed'"
+        );
+        console.log(stdout);
+
+        const result = !!stdout; // stdout 존재유무로 diff 판단
+        console.log(`[grade] result: ${result}`);
+        return result;
     } catch (error) {
-        console.log(`[grade] result: false`);
+        console.error(`[grade] error: ${error}`);
         return false;
     }
 }
@@ -79,7 +82,7 @@ async function gradeQ3() {
     }
 }
 
-// 5번 문항에 대한 정답 판별 로직 ("user4"의 비밀번호 최대 사용 기간 설정 확인)
+// 4번 문항에 대한 정답 판별 로직 ("user4"의 비밀번호 최대 사용 기간 설정 확인)
 async function gradeQ4() {
     const username = "user4";
     try {
@@ -94,13 +97,13 @@ async function gradeQ4() {
     }
 }
 
-// 6번 문항에 대한 정답 판별 로직 ("user5"의 경고 기간 설정 확인)
+// 5번 문항에 대한 정답 판별 로직 ("user5"의 경고 기간 설정 확인)
 async function gradeQ5() {
     const username = "user5";
     try {
         const { stdout } = await execAsync(`chage -l ${username}`);
         const warningDays = stdout.match(/Number of days of warning before password expires\s*:\s*(\d+)/);
-        const result = warningDays && parseInt(warningDays[1], 10) === 7;
+        const result = warningDays && parseInt(warningDays[1], 10) === 14;
         console.log(`[grade] result: ${result}`);
         return result;
     } catch (error) {
