@@ -33,13 +33,13 @@ exports.grade = async (req, res) => {
             result = await gradeQ();
             break;
         case :
-            result = await gradeQ9();
+            result = await gradeQ();
             break;
         case :
-            result = await gradeQ10();
+            result = await gradeQ();
             break;
         case :
-            result = await gradeQ11();
+            result = await gradeQ();
             break;
 
         default:
@@ -135,47 +135,41 @@ async function gradeQ7() {
 
 // 8번 문항에 대한 정답 판별 로직 (tar 명령어를 활용하여 현재 디렉토리에 있는 오브젝트파일만을 묶어 obj.tar 파일을 생성하세요)
 async function gradeQ8() {
-    const username = "john";
+    let isTarApplied = false; // tar -xvf 적용 여부를 추적하는 플래그
     try {
-        const { stdout } = await execAsync(`chage -l ${username}`);
-        console.log(`[debug] chage output: ${stdout}`);
+        await execAsync("mkdir /home/test/srcs/check");
 
-        const passwordExpiresMatch = stdout.match(/Password expires\s*:\s*(.*)/);
-        const inactiveDaysMatch = stdout.match(/Password inactive\s*:\s*(.*)/);
+        //  적용
+        const tarCommand = "tar -xvf /home/test/srcs/obj.tar -C /home/test/srcs/check";
+        const { stdout: tarStdout, stderr: tarStderr } = await execAsync(tarCommand);
 
-        if (!passwordExpiresMatch || !inactiveDaysMatch) {
-            console.log(`[grade] result: false - no match for "Password expires" or "Password inactive"`);
-            return false;
+        // patch 명령어 실행 중 오류 발생 시
+        if (tarStderr) {
+            console.error(`[grade] patch stderr: ${tarStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
         }
 
-        const passwordExpiresDateStr = passwordExpiresMatch[1].trim();
-        const inactiveDateStr = inactiveDaysMatch[1].trim();
-        console.log(`[debug] passwordExpiresDateStr: ${passwordExpiresDateStr}`);
-        console.log(`[debug] inactiveDateStr: ${inactiveDateStr}`);
+        isTarApplied = true; // tar -xvf 가 성공적으로 적용됨
 
-        const passwordExpiresDate = new Date(passwordExpiresDateStr);
-        const inactiveDate = new Date(inactiveDateStr);
+        // 수정된 파일과 기대 결과 파일 비교
+        const diffCommand = "diff -r /home/test/srcs/check /usr/stage_file/Q8/objs";
+        const { stdout: diffStdout, stderr: diffStderr } = await execAsync(diffCommand);
 
-        if (isNaN(passwordExpiresDate) || isNaN(inactiveDate)) {
-            console.log(`[grade] result: false - invalid date format`);
-            return false;
+        // diff 명령어 실행 중 오류 발생 시
+        if (diffStderr) {
+            console.error(`[grade] diff stderr: ${diffStderr}`);
+            return false;  // 오류가 있을 경우 실패로 처리
         }
 
-        // 암호 만료 날짜와 비활성화 날짜의 차이 계산
-        const diffTime = inactiveDate - passwordExpiresDate;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        console.log(`[debug] diffDays: ${diffDays}`);
-
-        // 날짜 차이가 정확히 7일인지 확인
-        const result = diffDays === 7;
-
-        console.log(`[grade] result: ${result}`);
-        return result;
+        console.log(`[grade] result: ${diffStdout === ''}`);
+        return diffStdout === '';
     } catch (error) {
-        console.error(`[grade] error: ${error.message}`);
+        console.error(`[grade] error: ${error}`);
         return false;
+    } finally {
+        // 항상 원래 상태로 복원
+        const tarReverseCommand = "rm -rf /home/test/srcs/check";
+        await execAsync(tarReverseCommand);
     }
 }
-
 
