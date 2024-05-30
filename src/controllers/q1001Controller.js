@@ -29,19 +29,15 @@ exports.grade = async (req, res) => {
         case 12:
             result = await gradeQ12();
             break;
-        case :
+        case 13:
             result = await gradeQ13();
             break;
-        case :
-            result = await gradeQ();
+        case 14:
+            result = await gradeQ14();
             break;
-        case :
-            result = await gradeQ();
+        case 17:
+            result = await gradeQ17();
             break;
-        case :
-            result = await gradeQ();
-            break;
-
         default:
             result = false;
             break;
@@ -196,7 +192,7 @@ async function gradeQ12() {
     }
 }
 
-// 13번 문항에 대한 정답 판별 로직 (다음은 시스템 로그 관련 설정을 하는 과정이다. 모든 서비스(facility)에 대해 가장 최고 수준(priority)의 위험한 상황이 발생한 경우에는 모든 사용자의 터미널로 관련 로그를 전송하도록 설정하세요. (기출 7번))
+// 13번 문항에 대한 정답 판별 로직 (다음은 시스템 로그 관련 설정을 하는 과정이다. ssh와 같은 인증 관련 로그는 /var/log/ssh.log 파일에 기록하도록 설정하세요. (기출 7번)(/etc/rsyslog.d/ssh.conf 에 작성하세요)
 async function gradeQ13() {
     const filePath = '/etc/rsyslog.d/ssh.conf';
 
@@ -227,4 +223,103 @@ async function gradeQ13() {
     }
 }
 
+// 14번 문항에 대한 정답 판별 로직 (시스템에 접속하는 사용자가 너무 많아서 특정 로그 파일의 로테이션 관련 설정을 변경하려고 한다. 로그인에 실패한 사용자 정보가 저장되는 로그 파일은 일주일 단위로 로테이션을 실행한다. 단 파일의 크기가 1MB에 도달하면 그 이전이라도 로테이션을 실행한다. 생성되는 파일을 소유자는 root, 소유 그룹은 utmp로 지정하며, root 사용자만 읽기 및 쓰기가 가능하도록 설정하세요. (/etc/logrotate.d/auth-failures 파일에 작성하세요)
+async function gradeQ14() {
+    const filePath = '/etc/logrotate.d/auth-failures';
+    const expectedConfig = [
+        '/var/log/btmp {',
+        '    weekly',
+        '    size 1M',
+        '    create 0600 root utmp',
+        '    rotate 5',
+        '}'
+    ];
 
+    try {
+        // 파일 존재 여부 확인
+        await fs.access(filePath);
+
+        // 파일 읽기
+        const data = await fs.readFile(filePath, 'utf8');
+
+        // 파일 내용을 줄 단위로 분리하고 공백 제거
+        const configLines = data.split('\n').map(line => line.trim());
+
+        // 설정 내용이 모두 포함되어 있는지 확인
+        let configMatch = true;
+
+        expectedConfig.forEach(expectedLine => {
+            if (!configLines.includes(expectedLine)) {
+                configMatch = false;
+            }
+        });
+
+        // 결과 출력 및 반환
+        console.log(`[check] Logrotate configuration match: ${configMatch}`);
+        return configMatch;
+    } catch (error) {
+        console.error(`[check] Error: ${error.message}`);
+        return false;
+    }
+}
+
+// 17번 문항에 대한 정답 판별 로직 (시스템에 접속하는 사용자가 너무 많아서 특정 로그 파일의 로테이션 관련 설정을 변경하려고 한다. 로그인에 실패한 사용자 정보가 저장되는 로그 파일은 일주일 단위로 로테이션을 실행한다. 단 파일의 크기가 1MB에 도달하면 그 이전이라도 로테이션을 실행한다. 생성되는 파일을 소유자는 root, 소유 그룹은 utmp로 지정하며, root 사용자만 읽기 및 쓰기가 가능하도록 설정하세요. (/etc/logrotate.d/auth-failures 파일에 작성하세요)
+async function gradeQ17() {
+    const filePath = '/etc/samba/smb.conf';
+    const expectedConfig = {
+        section: '[web]',
+        settings: [
+            'comment = HTML Directory',
+            'path = /usr/local/apache/html',
+            'browsable = yes',
+            'writable = yes',
+            'valid users = ihduser kaituser'
+        ]
+    };
+
+    try {
+        // 파일 존재 여부 확인
+        await fs.access(filePath);
+
+        // 파일 읽기
+        const data = await fs.readFile(filePath, 'utf8');
+
+        // 파일 내용을 줄 단위로 분리하고 공백 제거
+        const configLines = data.split('\n').map(line => line.trim());
+
+        // [web] 섹션 찾기
+        const startIndex = configLines.indexOf(expectedConfig.section);
+        if (startIndex === -1) {
+            console.log(`[check] [web] section not found.`);
+            return false;
+        }
+
+        // 섹션 끝 찾기
+        let endIndex = configLines.length;
+        for (let i = startIndex + 1; i < configLines.length; i++) {
+            if (configLines[i].startsWith('[')) {
+                endIndex = i;
+                break;
+            }
+        }
+
+        // 섹션 내의 내용 확인
+        const sectionLines = configLines.slice(startIndex + 1, endIndex);
+        const sectionSet = new Set(sectionLines);
+
+        let configMatch = true;
+        for (const expectedLine of expectedConfig.settings) {
+            if (!sectionSet.has(expectedLine)) {
+                configMatch = false;
+                break;
+            }
+        }
+
+        // 결과 출력 및 반환
+        console.log(`[check] Samba configuration match: ${configMatch}`);
+        return configMatch;
+    } catch (error) {
+        console.error(`[check] Error: ${error.message}`);
+        return false;
+    }
+}
