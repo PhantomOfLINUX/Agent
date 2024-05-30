@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 const util = require("util");
 const execAsync = util.promisify(exec); // exec 함수를 프로미스 객체로 변환
+const fs = require('fs').promises;
 
 // 채점 요청 받는 컨트롤 메서드
 exports.grade = async (req, res) => {
