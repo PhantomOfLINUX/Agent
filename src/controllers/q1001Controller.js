@@ -98,34 +98,83 @@ async function gradeQ5() {
 
 // 6번 문항에 대한 정답 판별 로직 (/home/test 디렉토리에서 sum.c 소스파일을 컴파일하여 오브젝트파일을 생성하세요)
 async function gradeQ6() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q6/sum.o /home/test/sum.o"
-        );
-        console.log(stdout);
+    const sourceFile = 'sum.c';
+    const objectFile = 'sum.o';
+    const tempObjectFile = 'temp_sum.o';
 
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
+    try {
+        // sum.c와 sum.o 파일이 존재하는지 확인
+        await fs.access(sourceFile);
+        await fs.access(objectFile);
+
+        // sum.c 파일을 사용하여 temp_sum.o 파일 생성
+        await execAsync(`gcc -c ${sourceFile} -o ${tempObjectFile}`);
+
+        // temp_sum.o 파일이 생성되었는지 확인
+        await fs.access(tempObjectFile);
+
+        // 두 오브젝트 파일을 비교
+        const { stdout, stderr } = await execAsync(`cmp ${objectFile} ${tempObjectFile}`);
+
+        // temp_sum.o 파일 삭제
+        await fs.unlink(tempObjectFile);
+
+        if (stderr) {
+            console.error(`[check] Error comparing files: ${stderr}`);
+            return false;
+        }
+
+        // cmp 명령어의 출력이 없으면 파일이 동일한 것
+        if (stdout.trim() === '') {
+            console.log(`[check] The object file was created using 'gcc -c'.`);
+            return true;
+        } else {
+            console.log(`[check] The object file was NOT created using 'gcc -c'.`);
+            return false;
+        }
     } catch (error) {
-        console.error(`[grade] error: ${error}`);
+        console.error(`[check] Error: ${error.message}`);
         return false;
     }
 }
 
 // 7번 문항에 대한 정답 판별 로직 (/home/test 디렉토리에서 sum.o 오브젝트 파일을 이용하여 sum 이라는 실행파일을 생성하세요)
 async function gradeQ7() {
-    try {
-        const { stdout, stderr } = await execAsync(
-            "diff /usr/stage_file/Q7/sum /home/test/sum"
-        );
-        console.log(stdout);
+    const objectFile = 'sum.o';
+    const executableFile = 'sum';
+    const tempExecutableFile = 'temp_sum';
 
-        const result = !stdout; // stdout 존재유무로 diff 판단
-        console.log(`[grade] result: ${result}`);
-        return result;
+    try {
+        // sum.o 파일이 존재하는지 확인
+        await fs.access(objectFile);
+
+        // sum.o 파일을 사용하여 temp_sum 실행 파일 생성
+        await execAsync(`gcc ${objectFile} -o ${tempExecutableFile}`);
+
+        // temp_sum 파일이 생성되었는지 확인
+        await fs.access(tempExecutableFile);
+
+        // 두 실행 파일을 비교
+        const { stdout, stderr } = await execAsync(`cmp ${executableFile} ${tempExecutableFile}`);
+
+        // temp_sum 파일 삭제
+        await fs.unlink(tempExecutableFile);
+
+        if (stderr) {
+            console.error(`[check] Error comparing files: ${stderr}`);
+            return false;
+        }
+
+        // cmp 명령어의 출력이 없으면 파일이 동일한 것
+        if (stdout.trim() === '') {
+            console.log(`[check] The executable file was created using 'gcc -o'.`);
+            return true;
+        } else {
+            console.log(`[check] The executable file was NOT created using 'gcc -o'.`);
+            return false;
+        }
     } catch (error) {
-        console.error(`[grade] error: ${error}`);
+        console.error(`[check] Error: ${error.message}`);
         return false;
     }
 }
