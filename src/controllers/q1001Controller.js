@@ -26,11 +26,11 @@ exports.grade = async (req, res) => {
         case 8:
             result = await gradeQ8();
             break;
-        case :
-            result = await gradeQ();
+        case 12:
+            result = await gradeQ12();
             break;
         case :
-            result = await gradeQ();
+            result = await gradeQ13();
             break;
         case :
             result = await gradeQ();
@@ -172,4 +172,59 @@ async function gradeQ8() {
         await execAsync(tarReverseCommand);
     }
 }
+
+// 12번 문항에 대한 정답 판별 로직 (다음은 시스템 로그 관련 설정을 하는 과정이다. 모든 서비스(facility)에 대해 가장 최고 수준(priority)의 위험한 상황이 발생한 경우에는 모든 사용자의 터미널로 관련 로그를 전송하도록 설정하세요. (기출 7번))
+async function gradeQ12() {
+    try {
+        const data = await fs.readFile('/etc/rsyslog.conf', 'utf8');
+
+        // 정규식 패턴 정의
+        const patterns = [
+            /^\*\.emerg\s+\*$/m,
+            /^\*\.emerg\s+:omusrmsg:\*$/m
+        ];
+
+        // 패턴 매칭
+        const emergMatch = patterns.some(pattern => pattern.test(data));
+
+        // 결과 출력 및 반환
+        console.log(`[check] *.emerg * or *.emerg :omusrmsg:*: ${emergMatch}`);
+        return emergMatch;
+    } catch (error) {
+        console.error(`[check] Error: ${error.message}`);
+        return false;
+    }
+}
+
+// 13번 문항에 대한 정답 판별 로직 (다음은 시스템 로그 관련 설정을 하는 과정이다. 모든 서비스(facility)에 대해 가장 최고 수준(priority)의 위험한 상황이 발생한 경우에는 모든 사용자의 터미널로 관련 로그를 전송하도록 설정하세요. (기출 7번))
+async function gradeQ13() {
+    const filePath = '/etc/rsyslog.d/ssh.conf';
+
+    try {
+        // 파일 존재 여부 확인
+        await fs.access(filePath);
+    } catch (error) {
+        console.error(`[check] Error: ${filePath} does not exist.`);
+        return false;
+    }
+
+    try {
+        // 파일 읽기
+        const data = await fs.readFile(filePath, 'utf8');
+
+        // 정규식 패턴 정의
+        const pattern = /^authpriv\.\*\s+\/var\/log\/ssh\.log$/m;
+
+        // 패턴 매칭
+        const configMatch = pattern.test(data);
+
+        // 결과 출력 및 반환
+        console.log(`[check] authpriv.* /var/log/ssh.log: ${configMatch}`);
+        return configMatch;
+    } catch (error) {
+        console.error(`[check] Error: ${error.message}`);
+        return false;
+    }
+}
+
 
