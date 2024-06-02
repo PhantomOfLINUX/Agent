@@ -98,9 +98,9 @@ async function gradeQ5() {
 
 // 6번 문항에 대한 정답 판별 로직 (/home/test 디렉토리에서 sum.c 소스파일을 컴파일하여 오브젝트파일을 생성하세요)
 async function gradeQ6() {
-    const sourceFile = 'sum.c';
-    const objectFile = 'sum.o';
-    const tempObjectFile = 'temp_sum.o';
+    const sourceFile = '/home/test/sum.c';
+    const objectFile = '/home/test/sum.o';
+    const tempObjectFile = '/home/test/temp_sum.o';
 
     try {
         // sum.c와 sum.o 파일이 존재하는지 확인
@@ -140,9 +140,9 @@ async function gradeQ6() {
 
 // 7번 문항에 대한 정답 판별 로직 (/home/test 디렉토리에서 sum.o 오브젝트 파일을 이용하여 sum 이라는 실행파일을 생성하세요)
 async function gradeQ7() {
-    const objectFile = 'sum.o';
-    const executableFile = 'sum';
-    const tempExecutableFile = 'temp_sum';
+    const objectFile = '/home/test/sum.o';
+    const executableFile = '/home/test/sum';
+    const tempExecutableFile = '/home/test/temp_sum';
 
     try {
         // sum.o 파일이 존재하는지 확인
