@@ -273,13 +273,14 @@ async function gradeQ13() {
     }
 }
 
+// 14번 17번 확인하기!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // 14번 문항에 대한 정답 판별 로직 (시스템에 접속하는 사용자가 너무 많아서 특정 로그 파일의 로테이션 관련 설정을 변경하려고 한다. 로그인에 실패한 사용자 정보가 저장되는 로그 파일은 일주일 단위로 로테이션을 실행한다. 단 파일의 크기가 1MB에 도달하면 그 이전이라도 로테이션을 실행한다. 생성되는 파일을 소유자는 root, 소유 그룹은 utmp로 지정하며, root 사용자만 읽기 및 쓰기가 가능하도록 설정하세요. (/etc/logrotate.d/auth-failures 파일에 작성하세요)
 async function gradeQ14() {
     const filePath = '/etc/logrotate.d/auth-failures';
     const expectedConfig = [
         '/var/log/btmp {',
         '    weekly',
-        '    size 1M',
+        '    minsize 1M',
         '    create 0600 root utmp',
         '    rotate 5',
         '}'
