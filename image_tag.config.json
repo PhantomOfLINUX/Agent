@@ -1,4 +1,6 @@
 {
     "latest": true,
-    "target": []
+    "target": [
+        "q1001"
+    ]
 }
