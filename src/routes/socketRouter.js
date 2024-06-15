@@ -12,10 +12,12 @@ module.exports = (wss) => {
 
         terminal.onData((data) => {
             ws.send(data);
+            console.log(`[output] ${new Date().toString} ${data}`);
         });
 
         ws.on("message", (message) => {
             terminal.write(message);
+            //console.log(`[input] ${new Date().toString} ${message}`);
         });
 
         ws.on("close", () => {
