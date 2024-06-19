@@ -35,7 +35,7 @@ jobs:
                   if [ "$LATEST" = "true" ]; then
                     TAGS+="${{ secrets.DOCKERHUB_ORGANIZATIONS }}/ws-base:latest,"
                   fi
-                  TAGS=${TAGS%,} # Remove the trailing comma
+                  TAGS=${TAGS%,}
                   echo "TAGS=$TAGS" >> $GITHUB_ENV
 
             - name: Build and Push Image
