@@ -4,12 +4,12 @@ class Terminal {
     constructor() {
         this.ptyProcess = pty.spawn("bash", [], {
             name: "xterm-color",
-            cols: 100,
-            rows: 30,
+            cols: 112,
+            rows: 42,
             cwd: process.env.HOME,
             env: process.env,
         });
-        this.ptyProcess.write("export HISTTIMEFORMAT=\"%F %T \"")
+        //this.ptyProcess.write("export HISTTIMEFORMAT=\"%F %T \"")
     }
 
     onData(callback) {
